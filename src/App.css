@@ -36,3 +36,18 @@
     transform: rotate(360deg);
   }
 }
+
+.login-sc {
+  margin-top: 200px;
+}
+
+.login-sc form {
+  background-color: aliceblue;
+  padding: 50px;
+  border-radius: 20px;
+}
+
+.login-sc .form-group {
+  width: 60%;
+  margin: auto;
+}

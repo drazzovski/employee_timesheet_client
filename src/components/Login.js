@@ -1,7 +1,6 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import axios from "axios";
 import settings from "../config/settings";
-import { AppContext } from "../context/AppContext";
 
 let Login = props => {
 
@@ -18,9 +17,8 @@ let Login = props => {
 
         axios.post(settings.url + "/api/auth/login", request, settings.jsonHeader)
             .then(r => {
-                console.log(r)
-                settings.setStorage("jwt", r.data.message);
-                props.history.push("/")
+                settings.setStorage("jwt", r.data.Message);
+                props.history.push("/Zadaci")
             })
             .catch(e => {
                 console.log(e)

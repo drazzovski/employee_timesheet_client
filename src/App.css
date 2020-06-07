@@ -51,3 +51,43 @@
   width: 60%;
   margin: auto;
 }
+
+.profile-card {
+    text-align: left;
+    padding: 20px;
+    width: 60%;
+    margin-bottom: 20px;
+    flex: 0 50%;
+    align-self: center;
+}
+
+.profile-card .row {
+   border: 1px solid gray;
+    border-radius: 20px;
+    padding: 20px;
+}
+
+.radnici {
+    text-align: -webkit-center;    
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.Toastify__toast-body {
+  white-space: pre-line;
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+.react-confirm-alert-button-group{
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.react-confirm-alert-body {
+  text-align: center !important;
+}

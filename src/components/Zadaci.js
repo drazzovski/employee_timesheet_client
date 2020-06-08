@@ -60,7 +60,17 @@ let Zadaci = props => {
             .then(r => {
                 ToastNotify("success", " Zadatak uspješno " + (!isEdit ? "kreiran" : "izmenjen"));
                 setLoad(true);
-                setZadaci([]);
+                if (!isEdit) {
+                    setZadaci([r.data, ...zadaci]);
+                }
+                else {
+                    setZadaci(
+                        zadaci.map(item =>
+                            item.Id === Id
+                                ? { ...item, Naziv: naziv, Opis: opis, Tip: tip === "1" ? "Projekat" : "Aktivnost" }
+                                : item
+                        ))
+                }
                 setId(null);
                 setNaziv("");
                 setOpis("");
@@ -95,7 +105,12 @@ let Zadaci = props => {
                         axios.post(settings.url + "/api/zadaci/deactivate", { Id: id }, { headers: { ...settings.jsonHeader, ...settings.authHeader(localStorage.getItem("jwt")) } })
                             .then(r => {
                                 ToastNotify("success", "Zadatak uspješno završen");
-                                setZadaci([]);
+                                setZadaci(
+                                    zadaci.map(item =>
+                                        item.Id === id
+                                            ? { ...item, Aktivan: false }
+                                            : item
+                                    ))
                             })
                             .catch(e => {
                                 ToastNotify("error", " Došlo je do greške");

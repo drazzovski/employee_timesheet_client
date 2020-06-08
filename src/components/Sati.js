@@ -17,6 +17,7 @@ let Sati = props => {
     const [sati, setSati] = useState("");
     const [minuti, setMinuti] = useState("");
     const [zadatakId, setZadatakId] = useState("0");
+    const [zadatakNaziv, setZadatakNaziv] = useState("");
 
     let FetchZadaciDropdown = async () => {
         await axios.get(settings.url + "/api/radnisati/zadacidropdown", { headers: { ...settings.jsonHeader, ...settings.authHeader(localStorage.getItem("jwt")) } })
@@ -56,14 +57,14 @@ let Sati = props => {
         let request = {
             ZadatakId: zadatakId,
             Sati: Number(sati),
-            Minute: Number(minuti)
+            Minute: Number(minuti),
+            Zadatak: zadatakNaziv
         }
 
         await axios.post(settings.url + "/api/radnisati", request, { headers: { ...settings.jsonHeader, ...settings.authHeader(localStorage.getItem("jwt")) } })
             .then(r => {
                 ToastNotify("success", " Sati uspješno upisani");
-                setRadniSati([]);
-                setZadatakId("0");
+                setRadniSati([r.data, ...radniSati]);
                 setSati("");
                 setMinuti("");
             })
@@ -94,7 +95,6 @@ let Sati = props => {
     }
 
     let handleDelete = (id) => {
-        console.log(id)
         confirmAlert({
             message: 'Da li želite da izbrišete sate?',
             buttons: [
@@ -104,7 +104,7 @@ let Sati = props => {
                         axios.post(settings.url + "/api/radnisati/delete", { Id: id }, { headers: { ...settings.jsonHeader, ...settings.authHeader(localStorage.getItem("jwt")) } })
                             .then(r => {
                                 ToastNotify("success", " Sati uspješno izbrisani");
-                                setRadniSati([]);
+                                setRadniSati(radniSati.filter(x => x.id !== id));
                             })
                             .catch(e => {
                                 ToastNotify("error", " Došlo je do greške");
@@ -117,7 +117,13 @@ let Sati = props => {
                 }
             ]
         });
+    }
 
+    let handleZadatakSelect = (e) => {
+        if (e.target.value !== "0") {
+            setZadatakId(e.target.value)
+            setZadatakNaziv(zadacidd.find(x => x.Id == e.target.value).Naziv);
+        }
     }
 
     return (
@@ -130,7 +136,7 @@ let Sati = props => {
                 <div className="row">
                     <div className="form-group col-sm">
                         <label htmlFor="zadatak-select">Zadatak</label>
-                        <select className="form-control" id="zadatak-select" onChange={e => setZadatakId(e.target.value)}>
+                        <select className="form-control" id="zadatak-select" onChange={e => handleZadatakSelect(e)}>
                             <option value="0"></option>
                             {zadacidd.map(item => {
                                 return <option key={item.Id} value={`${item.Id}`}>{item.Naziv}</option>

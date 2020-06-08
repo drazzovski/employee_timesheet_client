@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { faWrench, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
+import { faWrench, faPencilAlt, faFlagCheckered } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 let Zadatak = props => {
@@ -22,7 +22,20 @@ let Zadatak = props => {
                     <small><b>Autor:</b> {KreiranOd} <b>Aktivnost:</b> {Aktivan === true ? "Aktivan" : "Završen"}</small>
                 </div>
                 <div className="col-md-1">
-                    <FontAwesomeIcon icon={faPencilAlt} className="cursor" size="2x" onClick={() => props.handleEdit(Id)} />
+                    {
+                        Aktivan === true &&
+                        <div>
+                            <div>
+                                <FontAwesomeIcon icon={faPencilAlt} className="cursor" size="2x" onClick={() => props.handleEdit(Id)} />
+                            </div>
+                            <br />
+                            {
+                                (props.Rola === "Nadredjeni" || props.Rola === "Admin") && <div>
+                                    <FontAwesomeIcon icon={faFlagCheckered} className="cursor" size="2x" onClick={() => props.handleFinish(Id)} />
+                                </div>
+                            }
+                        </div>
+                    }
                 </div>
             </div>
         </div>

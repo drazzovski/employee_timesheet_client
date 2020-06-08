@@ -18,8 +18,8 @@ let Sati = props => {
     const [minuti, setMinuti] = useState("");
     const [zadatakId, setZadatakId] = useState("0");
 
-    let FetchZadaciDropdown = () => {
-        axios.get(settings.url + "/api/radnisati/zadacidropdown", { headers: { ...settings.jsonHeader, ...settings.authHeader(localStorage.getItem("jwt")) } })
+    let FetchZadaciDropdown = async () => {
+        await axios.get(settings.url + "/api/radnisati/zadacidropdown", { headers: { ...settings.jsonHeader, ...settings.authHeader(localStorage.getItem("jwt")) } })
             .then(r => {
                 console.log(r.data)
                 setZadaciDD(r.data);
@@ -32,8 +32,8 @@ let Sati = props => {
             })
     }
 
-    let FetchRadniSati = () => {
-        axios.get(settings.url + "/api/radnisati", { headers: { ...settings.jsonHeader, ...settings.authHeader(localStorage.getItem("jwt")) } })
+    let FetchRadniSati = async () => {
+        await axios.get(settings.url + "/api/radnisati", { headers: { ...settings.jsonHeader, ...settings.authHeader(localStorage.getItem("jwt")) } })
             .then(r => {
                 setRadniSati(r.data);
             })
@@ -43,10 +43,10 @@ let Sati = props => {
     }
 
     useEffect(() => {
-        FetchRadniSati();
-        FetchZadaciDropdown();
+        FetchRadniSati().then(() => {
+            FetchZadaciDropdown();
+        });
     }, [radniSati]);
-
 
     let saveHours = () => {
         if (!validateFields()) {
@@ -58,9 +58,8 @@ let Sati = props => {
             Sati: Number(sati),
             Minute: Number(minuti)
         }
-        console.log(request)
 
-        axios.post(settings.url + "/api/radnisati", request, { headers: { ...settings.jsonHeader, ...settings.authHeader(localStorage.getItem("jwt")) } })
+        await axios.post(settings.url + "/api/radnisati", request, { headers: { ...settings.jsonHeader, ...settings.authHeader(localStorage.getItem("jwt")) } })
             .then(r => {
                 ToastNotify("success", " Sati uspješno upisani");
                 setRadniSati([]);
@@ -71,6 +70,7 @@ let Sati = props => {
             .catch(e => {
                 ToastNotify("error", " Došlo je do greške");
             })
+
     }
 
     let validateFields = () => {

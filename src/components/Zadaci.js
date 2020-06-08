@@ -3,6 +3,7 @@ import axios from "axios";
 import settings from "../config/settings";
 import Zadatak from "./Zadatak";
 import ToastNotify from "./ToastNotify";
+import { confirmAlert } from 'react-confirm-alert';
 
 let Zadaci = props => {
 
@@ -20,10 +21,10 @@ let Zadaci = props => {
     const [isEdit, setIsEdit] = useState(false);
     const [load, setLoad] = useState(true);
 
-    let FetchData = () => {
+    let FetchData = async () => {
         if (load) {
             setLoad(false);
-            axios.get(settings.url + "/api/zadaci", { headers: { ...settings.jsonHeader, ...settings.authHeader(localStorage.getItem("jwt")) } })
+            await axios.get(settings.url + "/api/zadaci", { headers: { ...settings.jsonHeader, ...settings.authHeader(localStorage.getItem("jwt")) } })
                 .then(r => {
                     setZadaci(r.data);
                 })
@@ -84,6 +85,31 @@ let Zadaci = props => {
         modalOpen.current.click();
     }
 
+    let handleFinish = id => {
+        confirmAlert({
+            message: 'Da li želite da završite zadatak?',
+            buttons: [
+                {
+                    label: 'Da',
+                    onClick: () => {
+                        axios.post(settings.url + "/api/zadaci/deactivate", { Id: id }, { headers: { ...settings.jsonHeader, ...settings.authHeader(localStorage.getItem("jwt")) } })
+                            .then(r => {
+                                ToastNotify("success", "Zadatak uspješno završen");
+                                setZadaci([]);
+                            })
+                            .catch(e => {
+                                ToastNotify("error", " Došlo je do greške");
+                            })
+                    }
+                },
+                {
+                    label: 'Ne',
+                    onClick: () => { }
+                }
+            ]
+        });
+    }
+
     let modalCloseCall = e => {
         e.preventDefault();
     }
@@ -101,7 +127,7 @@ let Zadaci = props => {
             <br />
             <div className="container radnici">
                 {zadaci.map(item => {
-                    return <Zadatak key={item.Id} item={item} handleEdit={editZadatak} />
+                    return <Zadatak key={item.Id} item={item} handleEdit={editZadatak} Rola={role} handleFinish={handleFinish} />
                 })}
             </div>
 

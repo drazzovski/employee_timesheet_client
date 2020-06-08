@@ -48,7 +48,7 @@ let Sati = props => {
         });
     }, [radniSati]);
 
-    let saveHours = () => {
+    let saveHours = async () => {
         if (!validateFields()) {
             return;
         }
